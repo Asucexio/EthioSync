@@ -1,0 +1,35 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-bg: #18130f;
+  --color-surface: #221a14;
+  --color-surface-2: #2c2118;
+  --color-gold: #cda248;
+  --color-red: #b23a2e;
+  --color-green: #5c8568;
+  --color-ink: #eee5d3;
+  --color-ink-muted: #a89a85;
+  --color-ink-dim: #766a59;
+  --color-border: #eee5d3;
+
+  --font-display: "Fraunces", serif;
+  --font-body: "Archivo", sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
+  --font-geez: "Noto Sans Ethiopic", sans-serif;
+}
+
+body {
+  background: radial-gradient(120% 140% at 50% -10%, #211810 0%, var(--color-bg) 55%);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+}
+
+::selection {
+  background: color-mix(in srgb, var(--color-gold) 16%, transparent);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
