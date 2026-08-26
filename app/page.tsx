@@ -3,6 +3,7 @@ import { WorldTimeConverter } from "@/components/world-time-converter";
 import { CalendarConverter } from "@/components/calendar-converter";
 import { NumeralConverter } from "@/components/numeral-converter";
 import { HolidayCalendar } from "@/components/holiday-calendar";
+import { AgeCalculator } from "@/components/age-calculator";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 export default function Home() {
@@ -16,6 +17,7 @@ export default function Home() {
           <TabsTrigger value="calendar">Calendar</TabsTrigger>
           <TabsTrigger value="numerals">Numerals</TabsTrigger>
           <TabsTrigger value="holidays">Holidays</TabsTrigger>
+          <TabsTrigger value="age">Age</TabsTrigger>
         </TabsList>
 
         <TabsContent value="time">
@@ -29,6 +31,9 @@ export default function Home() {
         </TabsContent>
         <TabsContent value="holidays">
           <HolidayCalendar />
+        </TabsContent>
+        <TabsContent value="age">
+          <AgeCalculator />
         </TabsContent>
       </Tabs>
 
