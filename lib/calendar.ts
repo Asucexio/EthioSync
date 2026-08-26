@@ -199,3 +199,41 @@ export function buildEthiopianMonthGrid(
 }
 
 export const WEEKDAYS_SHORT = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+// ---------------------------------------------------------------------------
+// Date arithmetic helpers
+// ---------------------------------------------------------------------------
+
+/** Add `deltaDays` to a fixed date and return both calendar representations. */
+export function addDaysToFixed(fixed: number, deltaDays: number): {
+  fixed: number;
+  greg: [number, number, number];
+  eth: [number, number, number];
+} {
+  const result = fixed + deltaDays;
+  return {
+    fixed: result,
+    greg: gregorianFromFixed(result),
+    eth: ethiopicFromFixed(result),
+  };
+}
+
+/** Compute the absolute difference in days between two fixed dates. */
+export function daysBetweenFixed(a: number, b: number): number {
+  return Math.abs(a - b);
+}
+
+/** Format a date tuple as a human-readable string. */
+export function formatGregorian([y, m, d]: [number, number, number]): string {
+  return `${GREG_MONTHS[m - 1]} ${d}, ${y}`;
+}
+
+export function formatEthiopic([y, m, d]: [number, number, number]): string {
+  const info = ETH_MONTHS[m - 1];
+  return `${info.en} ${d}, ${y}`;
+}
+
+export function formatEthiopicGeez([y, m, d]: [number, number, number]): string {
+  const info = ETH_MONTHS[m - 1];
+  return `${info.ge} ${arabicToGeez(d)} ${arabicToGeez(y)}`;
+}

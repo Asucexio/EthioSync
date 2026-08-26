@@ -12,13 +12,14 @@ import {
 } from "@/lib/calendar";
 import { arabicToGeez } from "@/lib/geez-numerals";
 import { EthiopianMonthGrid } from "./ethiopian-month-grid";
+import { DateCalculator } from "./date-calculator";
 
 function pad2(n: number) {
   return String(n).padStart(2, "0");
 }
 
 type Direction = "gregToEth" | "ethToGreg";
-type View = "converter" | "monthGrid";
+type View = "converter" | "monthGrid" | "calculator";
 
 export function CalendarConverter() {
   const [view, setView] = useState<View>("converter");
@@ -75,48 +76,53 @@ export function CalendarConverter() {
     };
   }, [view, direction, gregDate, ethMonth, ethDay, ethYear]);
 
+  const ViewSwitcher = (
+    <div className="flex gap-2">
+      <Button
+        variant={view === "converter" ? "default" : "ghost"}
+        size="sm"
+        onClick={() => setView("converter")}
+      >
+        Converter
+      </Button>
+      <Button
+        variant={view === "monthGrid" ? "default" : "ghost"}
+        size="sm"
+        onClick={() => setView("monthGrid")}
+      >
+        Month Grid
+      </Button>
+      <Button
+        variant={view === "calculator" ? "default" : "ghost"}
+        size="sm"
+        onClick={() => setView("calculator")}
+      >
+        Calculator
+      </Button>
+    </div>
+  );
+
   if (view === "monthGrid") {
     return (
       <div className="space-y-4">
-        <div className="flex gap-2">
-          <Button
-            variant={view === "converter" ? "default" : "ghost"}
-            size="sm"
-            onClick={() => setView("converter")}
-          >
-            Converter
-          </Button>
-          <Button
-            variant={view === "monthGrid" ? "default" : "ghost"}
-            size="sm"
-            onClick={() => setView("monthGrid")}
-          >
-            Month Grid
-          </Button>
-        </div>
+        {ViewSwitcher}
         <EthiopianMonthGrid />
+      </div>
+    );
+  }
+
+  if (view === "calculator") {
+    return (
+      <div className="space-y-4">
+        {ViewSwitcher}
+        <DateCalculator />
       </div>
     );
   }
 
   return (
     <div className="space-y-4">
-      <div className="flex gap-2">
-        <Button
-          variant={view === "converter" ? "default" : "ghost"}
-          size="sm"
-          onClick={() => setView("converter")}
-        >
-          Converter
-        </Button>
-        <Button
-          variant={view === "monthGrid" ? "default" : "ghost"}
-          size="sm"
-          onClick={() => setView("monthGrid")}
-        >
-          Month Grid
-        </Button>
-      </div>
+      {ViewSwitcher}
 
       <Card>
         <CardHeader>
