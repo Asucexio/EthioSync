@@ -103,3 +103,137 @@ export const GREG_MONTHS = [
   "January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December",
 ];
+
+// ---------------------------------------------------------------------------
+// Month-grid helpers for the Ethiopian calendar visualiser
+// ---------------------------------------------------------------------------
+
+export interface GridDay {
+  ethYear: number;
+  ethMonth: number;
+  ethDay: number;
+  gregYear: number;
+  gregMonth: number;
+  gregDay: number;
+  fixed: number;
+  isToday: boolean;
+  isPadume: boolean;   // part of the 13th month (Pagume)
+  isOtherMonth: boolean; // belongs to prev/next Ethiopian month when padding grid
+}
+
+/** Build a 7-column (Sun→Sat) grid for an Ethiopian month.
+ *  `todayFixed` is optional; pass it to highlight the current day. */
+export function buildEthiopianMonthGrid(
+  year: number,
+  month: number,
+  todayFixed?: number
+): GridDay[] {
+  const monthStart = fixedFromEthiopic(year, month, 1);
+  const monthLen = ethiopicMonthLength(year, month);
+  const startWeekday = ((monthStart % 7) + 7) % 7; // 0 = Sunday
+
+  const days: GridDay[] = [];
+
+  // Pad leading days from previous month
+  if (startWeekday > 0) {
+    let prevMonth = month - 1;
+    let prevYear = year;
+    if (prevMonth < 1) {
+      prevMonth = 13;
+      prevYear -= 1;
+    }
+    const prevLen = ethiopicMonthLength(prevYear, prevMonth);
+    const prevStart = monthStart - startWeekday;
+    for (let i = 0; i < startWeekday; i++) {
+      const [gy, gm, gd] = gregorianFromFixed(prevStart + i);
+      days.push({
+        ethYear: prevYear, ethMonth: prevMonth, ethDay: prevLen - startWeekday + 1 + i,
+        gregYear: gy, gregMonth: gm, gregDay: gd,
+        fixed: prevStart + i,
+        isToday: todayFixed === prevStart + i,
+        isPadume: prevMonth === 13,
+        isOtherMonth: true,
+      });
+    }
+  }
+
+  // Current month
+  for (let d = 1; d <= monthLen; d++) {
+    const fixed = monthStart + d - 1;
+    const [gy, gm, gd] = gregorianFromFixed(fixed);
+    days.push({
+      ethYear: year, ethMonth: month, ethDay: d,
+      gregYear: gy, gregMonth: gm, gregDay: gd,
+      fixed,
+      isToday: todayFixed === fixed,
+      isPadume: month === 13,
+      isOtherMonth: false,
+    });
+  }
+
+  // Pad trailing days to complete the last week
+  const remaining = (7 - (days.length % 7)) % 7;
+  if (remaining > 0) {
+    let nextMonth = month + 1;
+    let nextYear = year;
+    if (nextMonth > 13) {
+      nextMonth = 1;
+      nextYear += 1;
+    }
+    const nextStart = monthStart + monthLen;
+    for (let i = 0; i < remaining; i++) {
+      const fixed = nextStart + i;
+      const [gy, gm, gd] = gregorianFromFixed(fixed);
+      days.push({
+        ethYear: nextYear, ethMonth: nextMonth, ethDay: i + 1,
+        gregYear: gy, gregMonth: gm, gregDay: gd,
+        fixed,
+        isToday: todayFixed === fixed,
+        isPadume: nextMonth === 13,
+        isOtherMonth: true,
+      });
+    }
+  }
+
+  return days;
+}
+
+export const WEEKDAYS_SHORT = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+// ---------------------------------------------------------------------------
+// Date arithmetic helpers
+// ---------------------------------------------------------------------------
+
+/** Add `deltaDays` to a fixed date and return both calendar representations. */
+export function addDaysToFixed(fixed: number, deltaDays: number): {
+  fixed: number;
+  greg: [number, number, number];
+  eth: [number, number, number];
+} {
+  const result = fixed + deltaDays;
+  return {
+    fixed: result,
+    greg: gregorianFromFixed(result),
+    eth: ethiopicFromFixed(result),
+  };
+}
+
+/** Compute the absolute difference in days between two fixed dates. */
+export function daysBetweenFixed(a: number, b: number): number {
+  return Math.abs(a - b);
+}
+
+/** Format a date tuple as a human-readable string. */
+export function formatGregorian([y, m, d]: [number, number, number]): string {
+  return `${GREG_MONTHS[m - 1]} ${d}, ${y}`;
+}
+
+export function formatEthiopic([y, m, d]: [number, number, number]): string {
+  const info = ETH_MONTHS[m - 1];
+  return `${info.en} ${d}, ${y}`;
+}
+
+export function formatEthiopicGeez([y, m, d]: [number, number, number]): string {
+  const info = ETH_MONTHS[m - 1];
+  return `${info.ge} ${arabicToGeez(d)} ${arabicToGeez(y)}`;
+}
