@@ -101,15 +101,16 @@ export function HeroClock() {
   const secAngle = (p.second / 60) * 360;
 
   return (
-    <header className="relative px-0 pb-7 pt-12 text-center">
-      <div className="pointer-events-none absolute inset-x-0 -top-10 h-[340px] bg-[radial-gradient(60%_60%_at_50%_0%,rgba(205,162,72,0.10),transparent_70%)]" />
+    <header className="relative px-0 pb-8 pt-12 text-center sm:pt-16">
+      <div className="pointer-events-none absolute inset-x-0 -top-10 h-[360px] bg-[radial-gradient(60%_60%_at_50%_0%,rgba(205,162,72,0.14),transparent_70%)]" />
 
-      <p className="relative mb-5.5 font-mono text-[11.5px] uppercase tracking-[0.18em] text-ink-muted">
+      <div className="relative mx-auto mb-5 inline-flex items-center gap-2 rounded-full border border-gold/25 bg-gold/10 px-4 py-2 font-mono text-[11px] uppercase tracking-[0.18em] text-ink-muted shadow-lg shadow-black/10">
+        <span className="h-2 w-2 rounded-full bg-green shadow-[0_0_16px_rgba(92,133,104,0.9)]" />
         Addis Ababa &nbsp;·&nbsp; <b className="font-semibold text-gold">East Africa Time</b> &nbsp;·&nbsp; UTC+3, no DST
-      </p>
+      </div>
 
-      <div className="relative mx-auto mb-5.5 h-52 w-52">
-        <svg viewBox="0 0 200 200" className="h-full w-full">
+      <div className="relative mx-auto mb-6 h-56 w-56 rounded-full border border-ink/10 bg-black/10 p-2 shadow-2xl shadow-black/30">
+        <svg viewBox="0 0 200 200" className="h-full w-full drop-shadow-[0_18px_35px_rgba(0,0,0,0.35)]">
           <circle cx={CX} cy={CY} r={R} fill="none" stroke="var(--color-ink)" strokeOpacity={0.12} strokeWidth={1.5} />
           <TickMarks />
           <NumeralRing />
@@ -120,12 +121,12 @@ export function HeroClock() {
         </svg>
       </div>
 
-      <p className="m-0 font-display text-[clamp(40px,9vw,56px)] font-semibold tabular-nums">
+      <h1 className="m-0 font-display text-[clamp(44px,10vw,68px)] font-semibold leading-none tracking-[-0.04em] tabular-nums">
         {pad2(p.hour)}:{pad2(p.minute)}
         <span className="ml-1.5 font-mono text-[0.55em] font-normal text-ink-dim">:{pad2(p.second)}</span>
-      </p>
+      </h1>
 
-      <p className="mt-3.5 text-[14.5px] text-ink-muted">
+      <p className="mt-4 text-[14.5px] text-ink-muted">
         <span className="font-geez text-gold">
           {monthInfo.ge} {arabicToGeez(ed)} {arabicToGeez(ey)}
         </span>
