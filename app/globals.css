@@ -33,3 +33,23 @@ body {
   outline-offset: 3px;
   border-radius: 4px;
 }
+
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-width: 320px;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image: linear-gradient(rgba(238, 229, 211, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(238, 229, 211, 0.035) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: linear-gradient(to bottom, black, transparent 78%);
+}

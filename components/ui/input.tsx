@@ -5,7 +5,7 @@ function Input({ className, ...props }: React.InputHTMLAttributes<HTMLInputEleme
   return (
     <input
       className={cn(
-        "w-full rounded-[10px] border border-ink/20 bg-black/20 px-3 py-2.5 text-[15px] font-mono text-ink placeholder:text-ink-dim",
+        "w-full rounded-xl border border-ink/15 bg-black/25 px-3.5 py-3 text-[15px] font-mono text-ink shadow-inner shadow-black/10 placeholder:text-ink-dim",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-0",
         className
       )}

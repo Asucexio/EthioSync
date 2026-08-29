@@ -12,7 +12,7 @@ function TabsList({ className, ...props }: React.ComponentProps<typeof TabsPrimi
   return (
     <TabsPrimitive.List
       className={cn(
-        "sticky top-0 z-20 flex gap-1.5 rounded-full border border-ink/10 bg-bg/90 p-1.5 backdrop-blur-md",
+        "sticky top-3 z-20 flex gap-1.5 overflow-x-auto rounded-[1.35rem] border border-ink/10 bg-bg/85 p-1.5 shadow-xl shadow-black/15 backdrop-blur-md",
         className
       )}
       {...props}
@@ -24,8 +24,8 @@ function TabsTrigger({ className, ...props }: React.ComponentProps<typeof TabsPr
   return (
     <TabsPrimitive.Trigger
       className={cn(
-        "flex-1 rounded-full px-2 py-2.5 text-[13.5px] font-semibold font-body text-ink-muted transition-colors",
-        "hover:text-ink data-[state=active]:bg-gold data-[state=active]:text-[#1c150d]",
+        "min-w-fit flex-1 rounded-2xl px-3 py-2.5 text-[13.5px] font-semibold font-body text-ink-muted transition-all",
+        "hover:bg-ink/5 hover:text-ink data-[state=active]:bg-gold data-[state=active]:text-[#1c150d] data-[state=active]:shadow-lg data-[state=active]:shadow-gold/20",
         className
       )}
       {...props}
@@ -34,7 +34,7 @@ function TabsTrigger({ className, ...props }: React.ComponentProps<typeof TabsPr
 }
 
 function TabsContent({ className, ...props }: React.ComponentProps<typeof TabsPrimitive.Content>) {
-  return <TabsPrimitive.Content className={cn("mt-7", className)} {...props} />;
+  return <TabsPrimitive.Content className={cn("mt-3 focus-visible:outline-none", className)} {...props} />;
 }
 
 export { Tabs, TabsList, TabsTrigger, TabsContent };
