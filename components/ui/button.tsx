@@ -8,6 +8,7 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
+        default: "bg-gold text-[#1c150d] hover:bg-gold/90",
         gold: "bg-gold text-[#1c150d] hover:bg-gold/90",
         ghost: "border border-ink/20 text-ink hover:border-gold hover:bg-gold/10",
         dashed: "border border-dashed border-ink/20 text-ink-muted hover:border-gold hover:text-gold",
@@ -16,6 +17,7 @@ const buttonVariants = cva(
         default: "px-4 py-2.5",
         sm: "px-3 py-1.5 text-xs",
         full: "w-full px-4 py-2.5",
+        icon: "h-9 w-9 p-0",
       },
     },
     defaultVariants: {

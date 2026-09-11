@@ -5,6 +5,8 @@
  * cross-checked by independent weekday arithmetic.
  */
 
+import { arabicToGeez } from "./geez-numerals";
+
 function div(a: number, b: number): number {
   return Math.floor(a / b);
 }
