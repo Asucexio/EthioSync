@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import {
-  getHolidaysForYear, getTodayStatus,
+  getHolidaysForYear, getTodayStatus, getUpcoming,
   type Holiday, type HolidayType,
 } from "@/lib/holidays";
 import { fixedFromGregorian, ethiopicFromFixed, GREG_MONTHS, ETH_MONTHS } from "@/lib/calendar";
@@ -136,20 +136,55 @@ function HolidayRow({ h, today }: { h: Holiday; today: number }) {
 // ---------------------------------------------------------------------------
 // Today's status banner
 // ---------------------------------------------------------------------------
-function TodayBanner({ active }: { active: Holiday[] }) {
-  if (active.length === 0) return null;
-  return (
-    <div className="mb-5 rounded-xl border border-gold/25 bg-gold/8 px-4 py-3">
-      <p className="mb-1 font-mono text-[11px] font-semibold uppercase tracking-wide text-gold">
-        Today
-      </p>
-      {active.map((h) => (
-        <p key={h.name} className="font-display text-[15px] font-semibold leading-snug">
-          {h.name} <span className="font-geez text-[14px] font-normal text-ink-muted">{h.nameAm}</span>
+function TodayBanner({
+  active, next, daysUntilNext,
+}: {
+  active: Holiday[];
+  next?: Holiday;
+  daysUntilNext?: number;
+}) {
+  if (active.length > 0) {
+    return (
+      <div className="mb-5 rounded-xl border border-gold/25 bg-gold/8 px-4 py-3">
+        <p className="mb-1 font-mono text-[11px] font-semibold uppercase tracking-wide text-gold">
+          Today
         </p>
-      ))}
-    </div>
-  );
+        {active.map((h) => (
+          <p key={h.name} className="font-display text-[15px] font-semibold leading-snug">
+            {h.name} <span className="font-geez text-[14px] font-normal text-ink-muted">{h.nameAm}</span>
+          </p>
+        ))}
+      </div>
+    );
+  }
+
+  if (next && daysUntilNext !== undefined) {
+    const s = TYPE_STYLES[next.type];
+    return (
+      <div className="mb-5 flex items-center gap-3 rounded-xl border border-ink/12 bg-black/10 px-4 py-3">
+        <span className={cn(
+          "flex-none rounded-full border px-2.5 py-1 text-center font-mono text-[11px] font-bold leading-tight",
+          s.badge
+        )}>
+          {daysUntilNext}
+          <br />
+          <span className="text-[8px] font-semibold uppercase tracking-wide">
+            {daysUntilNext === 1 ? "day" : "days"}
+          </span>
+        </span>
+        <div className="min-w-0">
+          <p className="font-mono text-[11px] font-semibold uppercase tracking-wide text-ink-dim">
+            Coming up
+          </p>
+          <p className="font-display text-[15px] font-semibold leading-snug">
+            {next.name} <span className="font-geez text-[14px] font-normal text-ink-muted">{next.nameAm}</span>
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  return null;
 }
 
 // ---------------------------------------------------------------------------
@@ -166,6 +201,15 @@ export function HolidayCalendar() {
     gregYear === currentGregYear ? getTodayStatus(fixed, holidays) : [],
     [fixed, holidays, gregYear, currentGregYear]
   );
+
+  // Next upcoming holiday from today, looked up across the current and
+  // following Gregorian year so the countdown still works in late December.
+  const nextHoliday = useMemo(() => {
+    if (gregYear !== currentGregYear) return undefined;
+    const span = [...holidays, ...getHolidaysForYear(currentGregYear + 1)];
+    return getUpcoming(fixed, span, 1)[0];
+  }, [fixed, holidays, gregYear, currentGregYear]);
+  const daysUntilNext = nextHoliday ? nextHoliday.gFixed - fixed : undefined;
 
   // Ethiopian year label: the year that contains January of the selected Gregorian year
   const [ethY] = ethiopicFromFixed(fixedFromGregorian(gregYear, 1, 1));
@@ -216,7 +260,7 @@ export function HolidayCalendar() {
         </button>
       </div>
 
-      <TodayBanner active={todayActive} />
+      <TodayBanner active={todayActive} next={nextHoliday} daysUntilNext={daysUntilNext} />
 
       {/* Legend */}
       <div className="mb-4 flex flex-wrap gap-3">
