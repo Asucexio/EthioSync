@@ -46,6 +46,22 @@ export function CalendarConverter() {
     return ethiopicMonthLength(y, m);
   }, [ethYear, ethMonth]);
 
+  function setToday() {
+    const today = new Date();
+    const gregValue = `${today.getFullYear()}-${pad2(today.getMonth() + 1)}-${pad2(today.getDate())}`;
+    const fixed = fixedFromGregorian(today.getFullYear(), today.getMonth() + 1, today.getDate());
+    const [ey, em, ed] = ethiopicFromFixed(fixed);
+
+    if (direction === "gregToEth") {
+      setGregDate(gregValue);
+      return;
+    }
+
+    setEthMonth(String(em));
+    setEthDay(String(ed));
+    setEthYear(String(ey));
+  }
+
   const result = useMemo(() => {
     if (view !== "converter") return null;
     if (direction === "gregToEth") {
@@ -132,12 +148,22 @@ export function CalendarConverter() {
 
         {direction === "gregToEth" ? (
           <div className="mb-4">
-            <Label htmlFor="greg-date">Gregorian date</Label>
+            <div className="mb-2 flex items-center justify-between gap-2">
+              <Label htmlFor="greg-date">Gregorian date</Label>
+              <Button variant="ghost" size="sm" className="h-7 text-[11px]" onClick={setToday}>
+                Today
+              </Button>
+            </div>
             <Input id="greg-date" type="date" value={gregDate} onChange={(e) => setGregDate(e.target.value)} />
           </div>
         ) : (
           <div className="mb-4">
-            <Label>Ethiopian date</Label>
+            <div className="mb-2 flex items-center justify-between gap-2">
+              <Label>Ethiopian date</Label>
+              <Button variant="ghost" size="sm" className="h-7 text-[11px]" onClick={setToday}>
+                Today
+              </Button>
+            </div>
             <div className="grid grid-cols-[1.3fr_1fr_0.9fr] gap-2.5">
               <Select value={ethMonth} onValueChange={setEthMonth}>
                 <SelectTrigger aria-label="Ethiopian month"><SelectValue /></SelectTrigger>
